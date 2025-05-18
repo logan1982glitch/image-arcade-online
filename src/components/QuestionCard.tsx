@@ -28,6 +28,33 @@ const QuestionCard = ({ question, onAnswer, showResult, onNext, userAnswer }: Qu
     setImageError(true);
   };
 
+  // Get vegetable name for the placeholder
+  const getVegetableName = () => {
+    const correctOption = question.options.find(opt => opt.id === question.correctAnswer);
+    return correctOption?.text || "Vegetable";
+  };
+
+  // Get emoji based on vegetable type
+  const getVegetableEmoji = () => {
+    const vegetableName = getVegetableName().toLowerCase();
+    
+    // Map vegetables to emojis
+    const emojiMap: Record<string, string> = {
+      turnip: "🥕",
+      broccoli: "🥦",
+      cabbage: "🥬",
+      lettuce: "🥬",
+      cucumber: "🥒",
+      beans: "🫛",
+      mushroom: "🍄",
+      onion: "🧅",
+      carrot: "🥕",
+      eggplant: "🍆"
+    };
+    
+    return emojiMap[vegetableName] || "🥗";
+  };
+
   return (
     <Card className="w-full max-w-3xl mx-auto bg-white shadow-lg border-none">
       <CardHeader className="text-center">
@@ -39,8 +66,14 @@ const QuestionCard = ({ question, onAnswer, showResult, onNext, userAnswer }: Qu
         <div className="flex flex-col md:flex-row">
           <div className="w-full md:w-1/2 md:pr-4 mb-6 md:mb-0 flex justify-center items-center">
             {imageError ? (
-              <div className="h-56 md:h-64 w-full flex items-center justify-center bg-gray-100 rounded-md">
-                <p className="text-gray-500">Image not available</p>
+              <div className="h-56 md:h-64 w-full flex flex-col items-center justify-center bg-gray-100 rounded-md">
+                <span className="text-6xl mb-2">{getVegetableEmoji()}</span>
+                <div className="text-center">
+                  <p className="text-gray-500 mb-1">Image not available</p>
+                  {!showResult && (
+                    <p className="text-sm text-gray-400">Try to guess the vegetable!</p>
+                  )}
+                </div>
               </div>
             ) : (
               <img 
