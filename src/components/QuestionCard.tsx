@@ -15,11 +15,17 @@ interface QuestionCardProps {
 
 const QuestionCard = ({ question, onAnswer, showResult, onNext, userAnswer }: QuestionCardProps) => {
   const [selectedOption, setSelectedOption] = useState<string | null>(null);
+  const [imageError, setImageError] = useState(false);
 
   const handleOptionClick = (optionId: string) => {
     if (showResult) return;
     setSelectedOption(optionId);
     onAnswer(optionId);
+  };
+
+  const handleImageError = () => {
+    console.error(`Failed to load image: ${question.image}`);
+    setImageError(true);
   };
 
   return (
@@ -32,11 +38,18 @@ const QuestionCard = ({ question, onAnswer, showResult, onNext, userAnswer }: Qu
       <CardContent className="pb-8">
         <div className="flex flex-col md:flex-row">
           <div className="w-full md:w-1/2 md:pr-4 mb-6 md:mb-0 flex justify-center items-center">
-            <img 
-              src={question.image} 
-              alt="Vegetable" 
-              className="max-h-56 md:max-h-64 object-contain"
-            />
+            {imageError ? (
+              <div className="h-56 md:h-64 w-full flex items-center justify-center bg-gray-100 rounded-md">
+                <p className="text-gray-500">Image not available</p>
+              </div>
+            ) : (
+              <img 
+                src={question.image} 
+                alt="Vegetable" 
+                className="max-h-56 md:max-h-64 object-contain"
+                onError={handleImageError}
+              />
+            )}
           </div>
           <div className="w-full md:w-1/2">
             {question.options.map(option => (
